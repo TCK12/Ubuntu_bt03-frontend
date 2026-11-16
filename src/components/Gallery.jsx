@@ -1,32 +1,43 @@
+import { Image as ImageIcon } from 'lucide-react';
+
 export default function Gallery({ images, page, setPage }) {
+  if (!images || images.length === 0) {
+    return (
+      <div className="empty-state">
+        <ImageIcon size={48} style={{ margin: '0 auto 15px', opacity: 0.2 }} />
+        <h3>Chưa có hình ảnh nào</h3>
+        <p>Hãy nhập từ khóa để AI bắt đầu sáng tạo.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="gallery-section">
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', 
-        gap: '15px' 
-      }}>
+      <div className="gallery-grid">
         {images.map((img) => (
-          <div key={img.id} style={{ border: '1px solid #ddd', padding: '5px', borderRadius: '8px' }}>
-            <img 
-              src={img.url} 
-              alt={img.prompt_en} 
-              style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '4px' }} 
-            />
-            <p style={{ fontSize: '12px', textAlign: 'center', margin: '5px 0 0 0', color: '#555' }}>
-              {img.filename}
-            </p>
+          <div className="image-card" key={img.id}>
+            <div className="image-wrapper">
+              <img src={img.url} alt={img.prompt_en} loading="lazy" />
+            </div>
+            <div className="image-info">
+              <div className="image-prompt" title={img.prompt_en}>
+                {img.prompt_en}
+              </div>
+              <div className="badge-ai">Worker {img.ai_code}</div>
+              <div className="image-meta">
+                ID: #{img.id}
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '30px' }}>
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+      <div className="pagination">
+        <button className="page-btn" disabled={page === 1} onClick={() => setPage(page - 1)}>
           &laquo; Trang trước
         </button>
-        <span style={{ padding: '5px 10px', fontWeight: 'bold' }}>Trang {page}</span>
-        {/* Vô hiệu hóa nút Next nếu số ảnh trả về ít hơn 50 (nghĩa là đã hết data) */}
-        <button disabled={images.length < 50} onClick={() => setPage(page + 1)}>
+        <div className="page-indicator">Trang {page}</div>
+        <button className="page-btn" disabled={images.length < 50} onClick={() => setPage(page + 1)}>
           Trang tiếp &raquo;
         </button>
       </div>
